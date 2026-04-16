@@ -12,18 +12,18 @@ public class UserClientService {
 
     private final UserClient userClient;
 
-    public void checkUser(final Long id, final String field) {
+    public void checkUser(final Long id, final String prompt) {
         if (id == null) {
-            throw new TeamException(String.format("Значение %s не задано", field));
+            throw new TeamException(String.format("Значение %s не задано", prompt));
         }
         if (!userClient.existsById(id)) {
-            throw new NotFoundException(String.format("Значение %s с id %s не найдено",field, id));
+            throw new NotFoundException(String.format("Значение %s с id %s не найдено", prompt, id));
         }
     }
 
-    public void checkRoleManager(final Long userId, String field){
+    public void checkRoleManager(final Long userId, String prompt){
         if (!userClient.isManager(userId)) {
-            throw new TeamException(String.format("%s %s не имеет роли MANAGER", field, userId));
+            throw new TeamException(String.format("%s %s не имеет роли MANAGER", prompt, userId));
         }
     }
 }

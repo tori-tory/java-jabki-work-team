@@ -4,9 +4,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
-import work.team.model.dto.TaskClientReportParams;
 import work.team.model.dto.TaskClientResponse;
-import work.team.model.dto.TeamReportResponse;
 
 import java.util.List;
 
@@ -24,13 +22,5 @@ public class TaskClient {
                 .body(ids)
                 .retrieve()
                 .body(new ParameterizedTypeReference<List<TaskClientResponse>>() {});
-    }
-
-    public TeamReportResponse teamReport(TaskClientReportParams params) {
-        return restClient.post()
-                .uri("/api/v1/task/reports/by-assignees")
-                .body(params)
-                .retrieve()
-                .body(new ParameterizedTypeReference<TeamReportResponse>() {});
     }
 }

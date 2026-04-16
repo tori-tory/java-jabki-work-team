@@ -25,8 +25,14 @@ public class TeamMemberRepository {
             AND user_id = :user_id
             """;
 
+    private static final String GET_USER_BY_TEAM = """
+            SELECT user_id
+            FROM work_team.team_member
+            WHERE team_id = :team_id
+            """;
+
     private final TeamMemberMapper teamMemberMapper;
-    private NamedParameterJdbcTemplate jdbcTemplate;
+    private final NamedParameterJdbcTemplate jdbcTemplate;
 
     public TeamMember insert(final TeamMember teamMember){
         return jdbcTemplate.queryForObject(INSERT, teamMemberToSql(teamMember), teamMemberMapper);
@@ -37,13 +43,7 @@ public class TeamMemberRepository {
     }
 
     public List<Long> getUsersByTeam(final Long id){
-        String sql = """
-            SELECT user_id
-            FROM work_team.team_member
-            WHERE team_id = :id
-            """;
-
-        return jdbcTemplate.queryForList(sql, new MapSqlParameterSource("id", id), Long.class);
+        return jdbcTemplate.queryForList(GET_USER_BY_TEAM, new MapSqlParameterSource("team_id", id), Long.class);
     }
 
     private MapSqlParameterSource teamMemberToSql(final TeamMember teamMember) {

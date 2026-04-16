@@ -1,12 +1,10 @@
 package work.team.model.dto;
 
-import work.team.model.TaskStatus;
-
-import java.util.Map;
+import java.util.List;
 
 public record TeamReportResponse(
-        Long totalTasks,
-        Map<TaskStatus, Long> taskByStatus,
-        Map<Long, Long> taskByAssignee,
+        int totalTasks,
+        List<TaskByStatus> taskByStatus,
+        List<ActiveMember> activeMembers,
         Double avgDays) {
 }

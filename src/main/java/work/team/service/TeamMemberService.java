@@ -10,9 +10,6 @@ import work.team.model.dto.TeamMemberRequest;
 import work.team.model.dto.TeamMemberResponse;
 import work.team.repository.TeamMemberRepository;
 
-import java.util.Collections;
-import java.util.List;
-
 @Service
 @RequiredArgsConstructor
 public class TeamMemberService {
@@ -22,9 +19,9 @@ public class TeamMemberService {
 
     @Transactional
     public TeamMemberResponse create(final TeamMemberRequest teamMemberRequest) {
-        validateUser(teamMemberRequest.editorId(), "Редактор");
-        userAccess(teamMemberRequest.editorId());
-        validateUser(teamMemberRequest.userId(), "Пользователь");
+        userClientService.checkUser(teamMemberRequest.editorId(), "Редактор");
+        userClientService.checkRoleManager(teamMemberRequest.editorId(), "Редактор");
+        userClientService.checkUser(teamMemberRequest.userId(), "Пользователь");
         validateTeam(teamMemberRequest.teamId());
         TeamMember teamMember = TeamMember.builder()
                 .teamId(teamMemberRequest.teamId())
@@ -40,8 +37,8 @@ public class TeamMemberService {
     @Transactional
     public ApiSuccess delete(final TeamMemberRequest teamMemberRequest) {
         validateTeam(teamMemberRequest.teamId());
-        validateUser(teamMemberRequest.editorId(), "Редактор");
-        userAccess(teamMemberRequest.editorId());
+        userClientService.checkUser(teamMemberRequest.editorId(), "Редактор");
+        userClientService.checkRoleManager(teamMemberRequest.editorId(), "Редактор");
 
         TeamMember teamMember = TeamMember.builder()
                 .teamId(teamMemberRequest.teamId())
@@ -57,23 +54,6 @@ public class TeamMemberService {
         }
 
         return new ApiSuccess(true);
-    }
-
-    public List<Long> getUsersByTeam(Long id) {
-        List<Long> userIds = teamMemberRepository.getUsersByTeam(id);
-        if (userIds.isEmpty()) {
-            return Collections.emptyList();
-        }
-
-        return userIds;
-    }
-
-    private void validateUser(Long userId, String field) {
-        userClientService.checkUser(userId, field);
-    }
-
-    private void userAccess(Long editorId) {
-        userClientService.checkRoleManager(editorId, "Редактор");
     }
 
     private void validateTeam(Long id) {
